@@ -1,0 +1,227 @@
+<!DOCTYPE html>
+<html lang="en">
+<head>
+  <meta charset="UTF-8" />
+  <meta name="viewport" content="width=device-width, initial-scale=1.0" />
+  <title>How Well Do You Know Me?</title>
+
+  <!-- PyScript Runtime -->
+  <link rel="stylesheet" href="https://pyscript.net/releases/2024.11.1/core.css" />
+  <script type="module" src="https://pyscript.net/releases/2024.11.1/core.js"></script>
+
+  <style>
+    :root {
+      --bg: #f8fafc;
+      --card-bg: #ffffff;
+      --text: #0f172a;
+      --muted: #475569;
+      --border: #e2e8f0;
+      --accent: #2563eb;
+      --accent-hover: #1d4ed8;
+      --error-bg: #fef2f2;
+      --error-border: #f87171;
+      --error-text: #991b1b;
+      --success-bg: #eff6ff;
+      --success-border: #93c5fd;
+    }
+
+    * {
+      box-sizing: border-box;
+    }
+
+    [hidden] {
+      display: none !important;
+    }
+
+    body {
+      margin: 0;
+      padding: 2rem 1rem 4rem;
+      font-family: -apple-system, BlinkMacSystemFont, "Segoe UI", Roboto, sans-serif;
+      line-height: 1.55;
+      color: var(--text);
+      background-color: var(--bg);
+    }
+
+    main {
+      max-width: 680px;
+      margin: 0 auto;
+    }
+
+    header {
+      margin-bottom: 2rem;
+      text-align: center;
+    }
+
+    header h1 {
+      margin: 0 0 0.5rem;
+      font-size: 2rem;
+      letter-spacing: -0.02em;
+    }
+
+    header p {
+      margin: 0.25rem 0;
+      color: var(--muted);
+    }
+
+    #loading-status {
+      display: inline-block;
+      margin-top: 0.75rem;
+      padding: 0.25rem 0.75rem;
+      font-size: 0.85rem;
+      border-radius: 999px;
+      background: var(--border);
+      color: var(--text);
+    }
+
+    /* Question Cards (populated in Step 5) */
+    .question-card {
+      background: var(--card-bg);
+      border: 1px solid var(--border);
+      border-radius: 10px;
+      padding: 1.25rem 1.5rem;
+      margin-bottom: 1rem;
+      box-shadow: 0 1px 2px rgba(15, 23, 42, 0.04);
+    }
+
+    .question-card.unanswered {
+      border-color: var(--error-border);
+      background: #fffafa;
+    }
+
+    .question-prompt {
+      margin: 0 0 0.9rem;
+      font-weight: 600;
+      font-size: 1.05rem;
+    }
+
+    .options-list {
+      display: flex;
+      flex-direction: column;
+      gap: 0.5rem;
+    }
+
+    .option-label {
+      display: flex;
+      align-items: center;
+      gap: 0.6rem;
+      padding: 0.55rem 0.75rem;
+      border: 1px solid var(--border);
+      border-radius: 6px;
+      cursor: pointer;
+      transition: background-color 0.15s ease, border-color 0.15s ease;
+    }
+
+    .option-label:hover {
+      background-color: #f1f5f9;
+      border-color: #cbd5e1;
+    }
+
+    .text-input {
+      width: 100%;
+      padding: 0.65rem 0.8rem;
+      font-size: 1rem;
+      font-family: inherit;
+      color: var(--text);
+      border: 1px solid #cbd5e1;
+      border-radius: 6px;
+    }
+
+    .text-input:focus {
+      outline: none;
+      border-color: var(--accent);
+      box-shadow: 0 0 0 3px rgba(37, 99, 235, 0.15);
+    }
+
+    /* Validation Warning */
+    #validation-message {
+      margin: 1.25rem 0;
+      padding: 0.9rem 1.1rem;
+      background: var(--error-bg);
+      border: 1px solid var(--error-border);
+      border-radius: 8px;
+      color: var(--error-text);
+      font-weight: 500;
+    }
+
+    /* Submit Button */
+    #submit-btn {
+      display: block;
+      width: 100%;
+      margin-top: 1.5rem;
+      padding: 0.85rem 1.25rem;
+      font-size: 1.05rem;
+      font-weight: 600;
+      color: #ffffff;
+      background-color: var(--accent);
+      border: none;
+      border-radius: 8px;
+      cursor: pointer;
+      transition: background-color 0.15s ease;
+    }
+
+    #submit-btn:hover {
+      background-color: var(--accent-hover);
+    }
+
+    /* Final Tier Results Banner */
+    #results-banner {
+      margin-top: 2rem;
+      padding: 1.75rem;
+      text-align: center;
+      background: var(--success-bg);
+      border: 2px solid var(--success-border);
+      border-radius: 12px;
+    }
+
+    #results-banner h2 {
+      margin: 0 0 0.25rem;
+      font-size: 1rem;
+      text-transform: uppercase;
+      letter-spacing: 0.06em;
+      color: var(--muted);
+    }
+
+    #score-display {
+      margin: 0.25rem 0 0.75rem;
+      font-size: 1.2rem;
+      font-weight: 600;
+    }
+
+    #tier-title {
+      margin: 0.25rem 0 0.5rem;
+      font-size: 1.85rem;
+      color: var(--accent);
+    }
+
+    #tier-tagline {
+      margin: 0;
+      font-size: 1.05rem;
+      color: var(--text);
+    }
+  </style>
+</head>
+<body>
+  <main>
+    <header>
+      <h1>How Well Do You Know Me?</h1>
+      <p>Answer all 20 questions below to unlock your friendship tier.</p>
+      <p id="loading-status">Loading Python runtime...</p>
+    </header>
+
+    <form id="quiz-form" novalidate>
+      <div id="quiz-questions"></div>
+      <div id="validation-message" role="alert" hidden></div>
+      <button type="submit" id="submit-btn">Submit Quiz</button>
+    </form>
+
+    <section id="results-banner" hidden>
+      <h2>Your Results</h2>
+      <p id="score-display"></p>
+      <h3 id="tier-title"></h3>
+      <p id="tier-tagline"></p>
+    </section>
+  </main>
+
+  <script type="py" src="./main.py"></script>
+</body>
+</html>

@@ -1,0 +1,192 @@
+================================================================================
+PROJECT LOG: "All About Maxwell" Browser Quiz
+================================================================================
+Project Name: "All About Maxwell" 20-Question Browser Quiz
+AI Assistant: Claude
+Tech Stack: HTML5, Embedded CSS, Python (via PyScript)
+
+--------------------------------------------------------------------------------
+1. STUDENT REFLECTION (Fill in these three lines yourself)
+--------------------------------------------------------------------------------
+What Claude built: 
+The HTML format and style, along with the function of the questions and buttons.
+
+Two things I learned: 
+1. Working with AI can be way more enjoyable than I thought. 
+2. How to get AI to plan code instead of write code more effectively
+
+The change I made myself: 
+I added a funny title if you get 100% in my quiz.
+
+--------------------------------------------------------------------------------
+2. SUMMARY OF HOW CLAUDE RESPONDED TO YOUR REQUESTS
+--------------------------------------------------------------------------------
+Throughout this project, Claude acted as a step-by-step planning, coding, and
+testing partner to build a browser-based friendship quiz running Python locally
+via PyScript:
+
+* Project Planning & Roadmap Design: Claude began by translating the initial
+  quiz concept into a structured project plan (`plan.md`) and a 7-step build
+  checklist (`roadmap.md`), breaking the application down into manageable
+  milestones so each layer could be built and verified incrementally.
+* Incremental Code Generation: Claude generated the HTML5 skeleton and PyScript
+  configuration (`index.html`), added lightweight embedded CSS for clean card
+  layouts and alert states, and wrote the core Python application (`main.py`)
+  featuring friendship tier definitions, a dynamic DOM question renderer,
+  form completeness validation, and case-insensitive exact-match grading.
+* Edge-Case Testing & Progress Tracking: Once the core engine worked, Claude
+  provided a verification checklist to test whitespace-only inputs, mixed
+  capitalization, re-submission recovery, and tier boundary percentages, and
+  updated `roadmap.md` to mark completed steps.
+* Interactive Question-by-Question Customization: At your request, Claude
+  walked through all 20 quiz questions one by one, adapting prompts to
+  third-person phrasing ("Maxwell"), recording your real answers and decoy
+  options, normalizing acceptable answers to lowercase for the grading engine,
+  and adding a custom 100% Easter-egg tier ("Stop taking your own test Maxwell").
+
+--------------------------------------------------------------------------------
+3. APPENDED CHAT LOG
+--------------------------------------------------------------------------------
+[PHASE 1: PLANNING, SETUP & CORE IMPLEMENTATION (STEPS 1–6)]
+
+Maxwell: Asked to plan and build a 20-question "All About Me" browser quiz using
+HTML and Python (PyScript), structured with a step-by-step roadmap.
+Claude: Created `plan.md` outlining the architecture (static HTML + PyScript
+runtime, `TIERS` and `QUESTIONS` data structures, dynamic DOM rendering, and
+exact-match grading) and `roadmap.md` organizing the work into 7 steps.
+
+Maxwell: Worked through Steps 1–6 to set up the local server, create the HTML
+skeleton, add embedded styling, define placeholder tiers/questions, render the
+form dynamically, and implement submission validation and grading.
+Claude: Provided the HTML, CSS, and Python implementations for each step,
+ensuring unanswered questions are highlighted with a validation alert and text
+answers are normalized with `.strip().lower()` before grading.
+
+--------------------------------------------------------------------------------
+[PHASE 2: EDGE-CASE TESTING, ROADMAP UPDATES & PERSONALIZATION (STEP 7)]
+
+Maxwell: Step 6 works! Let's move on to Step 7 to test edge cases and customize
+my quiz questions and tiers.
+Claude: Provided a 5-point edge-case verification checklist (whitespace-only
+inputs, case/space normalization, exact aliases, re-submission recovery, and
+tier cutoffs) along with formatting rules for customizing `TIERS` and
+`QUESTIONS` in `main.py`.
+
+Maxwell: Mark the completed steps in the road map, then I have another thing I
+want to do
+Claude: Updated `roadmap.md` to check off Steps 2 through 6, leaving Step 7
+open for testing and content customization.
+
+Maxwell: You should go question by question asking me what my answers would be,
+then take those answers to edit the code
+Claude: Started an interactive 20-question review, starting with Question 1
+("What is my go-to morning drink order?").
+
+Maxwell: Change this question to "What is Maxwell's favorite soda?" and the
+correct answer is Dr. Pepper
+Claude: Locked in Question 1 with options ["Dr. Pepper", "Coca-Cola", "Sprite",
+"Root Beer"] and answer `"dr. pepper"`, then presented Question 2.
+
+Maxwell: I'll switch them case by case, yes for this question. The answer for
+this question is October
+Claude: Locked in Question 2 ("What month was Maxwell born in?" -> `"october"`),
+then presented Question 3.
+
+Maxwell: Lets change the question. "Of the single-player options below, which
+is Maxwell's favorite video game?" A. Portal B. Oblivion C. Neon White
+D. Vholume E. Arkham City F. Mirror's Edge. Correct answer is A, Portal
+Claude: Locked in Question 3 (`"portal"`), then presented Question 4.
+
+Maxwell: Lets swap the question. What is Maxwell's favorite color? Answer:
+purple
+Claude: Locked in Question 4 (`"purple"`), then presented Question 5.
+
+Maxwell: Switch to "Which pizza place does Maxwell prefer to order delivery
+from?" A. Little Caesars B. Pizza Hut C. Dominos D. Papa Johns. Answer is D.
+Papa Johns
+Claude: Locked in Question 5 (`"papa johns"`), then presented Question 6.
+
+Maxwell: Change. "Which is Maxwell's irrational fear?" a. Popsicle sticks
+b. Paper cuts c. Electrical Sockets d. Tripping in public. answer is a
+Claude: Locked in Question 6 (`"popsicle sticks"`), then presented Question 7.
+
+Maxwell: change. What was the name of Maxwell's pet frog? a. Batman
+b. Chewbacca c. Doctor Who d. Ferb. answer c
+Claude: Recorded Question 7 and presented Question 8.
+
+Maxwell: Wait, I take that back, the answer for 7 should be b, Chewbacca
+Claude: Updated Question 7 to `"chewbacca"` and re-presented Question 8.
+
+Maxwell: Switch question to maxwell. answer is fall
+Claude: Locked in Question 8 ("Which season does Maxwell like best?" ->
+`"fall"`), then presented Question 9.
+
+Maxwell: Change. "What is Maxwell's favorite kind of dessert?" a. Cookies
+b. Cake c. Ice cream d. Donuts. answer is d
+Claude: Locked in Question 9 (`"donuts"`), then presented Question 10.
+
+Maxwell: How many degrees in total does Maxwell's spine curve? (Last confirmed)
+answer is 32
+Claude: Locked in Question 10 with normalized answers `["32", "32 degrees",
+"32°"]`, then presented Question 11.
+
+Maxwell: Who is Maxwell's favorite youtuber? a. Sunlesskhan b. Wirtual
+c. Summoning Salt d. Matpat e. 3fs f. Sideways. answer is e
+Claude: Locked in Question 11 (`"3fs"`), then presented Question 12.
+
+Maxwell: Answer is Math
+Claude: Locked in Question 12 ("What subject did Maxwell enjoy most in school?"
+-> `["math", "mathematics"]`), then presented Question 13.
+
+Maxwell: change to Maxwell. a. sci-fi b. comedy c. action d. horror. answer is d
+Claude: Locked in Question 13 ("What is Maxwell's go-to movie genre?" ->
+`"horror"`), then presented Question 14.
+
+Maxwell: change "What is Maxwell's top listened to artist of the last year? (at
+the time of making this question)" a Djo b Valley c Dreams We've Had d Songs by
+Jonas e Bastille. answer is a
+Claude: Locked in Question 14 (`"djo"`), then presented Question 15.
+
+Maxwell: Change to What is Maxwell's second favorite movie? a. The Batman
+b. Everything Everywhere All at Once c. Obsession d. The Odyssey e. The Black
+Phone. answer is b
+Claude: Locked in Question 15 (`"everything everywhere all at once"`), then
+presented Question 16.
+
+Maxwell: What is Maxwell's highest ever rank in Rocket League? (any game mode)
+a. Champion 1 b. Champion 2 c. Champion 3 d. Grand Champ 1 e. Grand Champ 2
+f. Grand Champ 3. answer is c
+Claude: Locked in Question 16 (`"champion 3"`), then presented Question 17.
+
+Maxwell: switch to maxwell. switch Time Travel option to super speed and make
+that the correct answer
+Claude: Locked in Question 17 ("Which superpower would Maxwell choose?" ->
+`"super speed"`), then presented Question 18.
+
+Maxwell: What episode of One Piece is Maxwell currently on? 950
+Claude: Locked in Question 18 (`["950", "episode 950", "ep 950"]`), then
+presented Question 19.
+
+Maxwell: What was Maxwell's favorite area on his mission? a. Greenwich
+b. Gosford c. Wollongong d. Armidale e. Sutherland f. Oakhurst g. Camden
+h. Prariewood. answer is c wollongong
+Claude: Locked in Question 19 (`"wollongong"`), then presented Question 20.
+
+Maxwell: Change the question to, "Who is this quiz about?" Answer: Maxwell
+Claude: Output the complete, normalized `QUESTIONS` Python list with all 20
+custom questions and answers ready to paste into `main.py`.
+
+
+Maxwell: I have updated the file, and everything seems to be working well
+Claude: Confirmed completion of Version 1 and offered optional next steps
+(GitHub Pages deployment, answer review breakdown, or clipboard score sharing).
+
+Maxwell: Nope. I think this is all great. I need help with a step of the
+homework. Log: ask Claude to generate a document template for your project log.
+Fill in three lines yourself: what Claude built, two things you learned, and
+the change you made yourself. Then ask Claude to append the chat and a summary
+of how it responded to your requests. make a project_log.txt filling in
+everything you can. Leave blanks on the parts I should fill in.
+Claude: Generated `project_log.txt` containing the project header, blank
+reflection lines for Maxwell to complete, a summary of Claude's responses, and
+the appended chat log.
