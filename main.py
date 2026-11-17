@@ -294,7 +294,9 @@ def handle_submit(event):
     total = len(QUESTIONS)
 
     for q in QUESTIONS:
-        user_answer = answers[q["id"]]
+        user_answer = answers[q["id"]].strip().lower()
+        accepted_answers = [ans.strip().lower() for ans in q["answers"]]
+
         card = document.getElementById(f"card-{q['id']}")
         feedback = document.getElementById(f"feedback-{q['id']}")
 
@@ -302,7 +304,7 @@ def handle_submit(event):
         feedback.innerHTML = ""
 
         status_line = document.createElement("div")
-        if user_answer in q["answers"]:
+        if user_answer in accepted_answers:
             score += 1
             card.classList.add("correct")
             status_line.textContent = "✓ Correct"
