@@ -106,14 +106,14 @@ QUESTIONS = [
     {
         "id": 11,
         "type": "choice",
-        "prompt": "Who is Maxwell's favorite youtuber?",
+        "prompt": "Who is Maxwell's current favorite youtuber?",
         "options": ["Sunlesskhan", "Wirtual", "Summoning Salt", "Matpat", "3fs", "Sideways"],
         "answers": ["3fs"],
     },
     {
         "id": 12,
         "type": "text",
-        "prompt": "What subject did Maxwell enjoy most in school?",
+        "prompt": "What subject did Maxwell enjoy most in school? (core)",
         "answers": ["math", "mathematics"],
     },
     {
@@ -154,7 +154,7 @@ QUESTIONS = [
     {
         "id": 18,
         "type": "text",
-        "prompt": "What episode of One Piece is Maxwell currently on?",
+        "prompt": "What episode of One Piece is Maxwell currently on? (to the nearest 10) (1180 episodes total)",
         "answers": ["950", "episode 950", "ep 950"],
     },
     {
@@ -162,13 +162,13 @@ QUESTIONS = [
         "type": "choice",
         "prompt": "What was Maxwell's favorite area on his mission?",
         "options": ["Greenwich", "Gosford", "Wollongong", "Armidale", "Sutherland", "Oakhurst", "Camden", "Prariewood"],
-        "answers": ["wollongong"],
+        "answers": ["wollongong", "armidale", "sutherland"],
     },
     {
         "id": 20,
         "type": "text",
         "prompt": "Who is this quiz about?",
-        "answers": ["maxwell", "maxwell cannon"],
+        "answers": ["maxwell", "maxwell cannon", "maxwell jenkins cannon"],
     },
 ]
 
@@ -177,137 +177,146 @@ QUESTIONS = [
 # 3. DYNAMIC QUESTION RENDERER (Step 5)
 # ==========================================
 def render_quiz():
-    container = document.querySelector("#quiz-questions")
+    container = document.getElementById("quiz-questions")
     container.innerHTML = ""
 
-    for index, question in enumerate(QUESTIONS, start=1):
+    for q in QUESTIONS:
         card = document.createElement("div")
         card.className = "question-card"
-        card.id = f"card-{question['id']}"
+        card.id = f"card-{q['id']}"
 
         prompt = document.createElement("p")
         prompt.className = "question-prompt"
-        prompt.textContent = f"{index}. {question['prompt']}"
+        prompt.textContent = f"{q['id']}. {q['prompt']}"
         card.appendChild(prompt)
 
-        if question["type"] == "choice":
-            options_list = document.createElement("div")
-            options_list.className = "options-list"
+        if q["type"] == "choice":
+            options_group = document.createElement("div")
+            options_group.className = "options-group"
 
-            for option_text in question["options"]:
+            for opt in q["options"]:
                 label = document.createElement("label")
                 label.className = "option-label"
 
                 radio = document.createElement("input")
                 radio.type = "radio"
-                radio.name = question["id"]
-                radio.value = option_text
+                radio.name = f"q-{q['id']}"
+                radio.value = opt.lower()
 
-                span = document.createElement("span")
-                span.textContent = option_text
+                text = document.createElement("span")
+                text.textContent = opt
 
                 label.appendChild(radio)
-                label.appendChild(span)
-                options_list.appendChild(label)
+                label.appendChild(text)
+                options_group.appendChild(label)
 
-            card.appendChild(options_list)
-
-        elif question["type"] == "text":
+            card.appendChild(options_group)
+        else:
             text_input = document.createElement("input")
             text_input.type = "text"
-            text_input.name = question["id"]
-            text_input.id = f"input-{question['id']}"
+            text_input.id = f"input-q-{q['id']}"
+            text_input.name = f"q-{q['id']}"
             text_input.className = "text-input"
             text_input.placeholder = "Type your answer..."
-            text_input.autocomplete = "off"
             card.appendChild(text_input)
+
+        feedback = document.createElement("div")
+        feedback.className = "question-feedback"
+        feedback.id = f"feedback-{q['id']}"
+        card.appendChild(feedback)
 
         container.appendChild(card)
 
-    status = document.querySelector("#loading-status")
-    status.textContent = "Quiz ready — answer all 20 questions below!"
+    status = document.getElementById("quiz-status")
+    if status:
+        status.textContent = f"Quiz ready — answer all {len(QUESTIONS)} questions below!"
 
 
-# ==========================================
-# 4. VALIDATION & GRADING ENGINE (Step 6)
-# ==========================================
+def get_tier(percent):
+    for tier in TIERS:
+        if percent >= tier["min_percent"]:
+            return tier
+    return TIERS[-1]
+
+
 @when("submit", "#quiz-form")
 def handle_submit(event):
     event.preventDefault()
 
-    validation_box = document.querySelector("#validation-message")
-    results_banner = document.querySelector("#results-banner")
+    answers = {}
+    missing = []
 
-    unanswered_numbers = []
-    first_missing_card = None
-    user_answers = {}
-
-    # Check every question for a non-empty response
-    for index, question in enumerate(QUESTIONS, start=1):
-        qid = question["id"]
-        card = document.querySelector(f"#card-{qid}")
-        card.classList.remove("unanswered")
-
-        if question["type"] == "choice":
-            selected = document.querySelector(f'input[name="{qid}"]:checked')
-            if selected is None:
-                unanswered_numbers.append(index)
-                card.classList.add("unanswered")
-                if first_missing_card is None:
-                    first_missing_card = card
+    for q in QUESTIONS:
+        if q["type"] == "choice":
+            selected = document.querySelector(f'input[name="q-{q["id"]}"]:checked')
+            if selected:
+                answers[q["id"]] = selected.value.strip().lower()
             else:
-                user_answers[qid] = selected.value.strip().lower()
-
-        elif question["type"] == "text":
-            text_el = document.querySelector(f"#input-{qid}")
-            cleaned = text_el.value.strip().lower()
-            if not cleaned:
-                unanswered_numbers.append(index)
-                card.classList.add("unanswered")
-                if first_missing_card is None:
-                    first_missing_card = card
+                missing.append(q["id"])
+        else:
+            inp = document.getElementById(f"input-q-{q['id']}")
+            val = inp.value.strip().lower() if inp else ""
+            if val:
+                answers[q["id"]] = val
             else:
-                user_answers[qid] = cleaned
+                missing.append(q["id"])
 
-    # Block submission if anything was left blank
-    if unanswered_numbers:
-        results_banner.hidden = True
-        missing_str = ", ".join(str(num) for num in unanswered_numbers)
-        validation_box.textContent = (
-            f"Please answer every question before submitting. "
-            f"Missing question(s): {missing_str}."
-        )
-        validation_box.hidden = False
-        if first_missing_card is not None:
-            first_missing_card.scrollIntoView()
+    error_box = document.getElementById("error-msg")
+    banner = document.getElementById("results-banner")
+
+    if missing:
+        msg = f"Please answer all questions before submitting (missing: {', '.join(str(m) for m in missing)})."
+        if error_box:
+            error_box.textContent = msg
+            error_box.style.display = "block"
+            error_box.scrollIntoView({"behavior": "smooth", "block": "center"})
+        elif banner:
+            banner.innerHTML = f'<p class="error-text">{msg}</p>'
+            banner.style.display = "block"
+            banner.scrollIntoView({"behavior": "smooth", "block": "center"})
         return
 
-    # All questions answered — grade exact matches
-    validation_box.hidden = True
+    if error_box:
+        error_box.style.display = "none"
+
     score = 0
-    for question in QUESTIONS:
-        qid = question["id"]
-        if user_answers[qid] in question["answers"]:
-            score += 1
-
     total = len(QUESTIONS)
+
+    for q in QUESTIONS:
+        user_answer = answers[q["id"]]
+        card = document.getElementById(f"card-{q['id']}")
+        feedback = document.getElementById(f"feedback-{q['id']}")
+
+        card.classList.remove("incorrect", "correct")
+        feedback.textContent = ""
+
+        if user_answer in q["answers"]:
+            score += 1
+            card.classList.add("correct")
+            feedback.textContent = "✓ Correct"
+        else:
+            card.classList.add("incorrect")
+            feedback.textContent = "✗ Incorrect"
+
     percent = round((score / total) * 100)
+    tier = get_tier(percent)
 
-    # Match score percentage to the highest qualifying tier
-    matched_tier = TIERS[-1]
-    for tier in TIERS:
-        if percent >= tier["min_percent"]:
-            matched_tier = tier
-            break
+    tier_el = document.getElementById("tier-title")
+    score_el = document.getElementById("score-display")
+    tagline_el = document.getElementById("tier-tagline")
 
-    # Populate and reveal the results banner
-    document.querySelector("#score-display").textContent = (
-        f"You scored {score} / {total} ({percent}%)"
-    )
-    document.querySelector("#tier-title").textContent = matched_tier["title"]
-    document.querySelector("#tier-tagline").textContent = matched_tier["tagline"]
-    results_banner.hidden = False
-    results_banner.scrollIntoView()
+    if tier_el:
+        tier_el.textContent = tier["title"]
+    if score_el:
+        score_el.textContent = f"You scored {score}/{total} ({percent}%)"
+    if tagline_el:
+        tagline_el.textContent = tier["tagline"]
+
+    if banner:
+        banner.classList.remove("hidden")
+        banner.removeAttribute("hidden")
+        banner.style.display = "block"
+        banner.scrollIntoView({"behavior": "smooth", "block": "center"})
 
 
 render_quiz()
