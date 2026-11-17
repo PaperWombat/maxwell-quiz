@@ -55,12 +55,14 @@ QUESTIONS = [
         "prompt": "Of the single-player options below, which is Maxwell's favorite video game?",
         "options": ["Portal", "Oblivion", "Neon White", "Vholume", "Arkham City", "Mirror's Edge"],
         "answers": ["portal"],
+        "fun_fact": "Fun fact: All of these games are up there in my favorites",
     },
     {
         "id": 4,
         "type": "text",
         "prompt": "What is Maxwell's favorite color?",
         "answers": ["purple"],
+        "fun_fact": "Fun fact: My favorite color to WEAR is green! Purple has been my favorite my whole life",
     },
     {
         "id": 5,
@@ -89,6 +91,7 @@ QUESTIONS = [
         "prompt": "Which season does Maxwell like best?",
         "options": ["Spring", "Summer", "Fall", "Winter"],
         "answers": ["fall"],
+        "fun_fact": "Fun fact: SWEATER SEASON!",
     },
     {
         "id": 9,
@@ -102,6 +105,7 @@ QUESTIONS = [
         "type": "text",
         "prompt": "How many degrees in total does Maxwell's spine curve? (Last confirmed)",
         "answers": ["32", "32 degrees", "32°"],
+        "fun_fact": "Fun fact: His back curves twice! 12 degrees one way, 20 degrees the other, totalling in 32 degrees",
     },
     {
         "id": 11,
@@ -109,6 +113,7 @@ QUESTIONS = [
         "prompt": "Who is Maxwell's current favorite youtuber?",
         "options": ["Sunlesskhan", "Wirtual", "Summoning Salt", "Matpat", "3fs", "Sideways"],
         "answers": ["3fs"],
+        "fun_fact": "Fun fact: Maxwell would consider MatPat his All-Time favorite youtuber!",
     },
     {
         "id": 12,
@@ -129,6 +134,7 @@ QUESTIONS = [
         "prompt": "What is Maxwell's top listened to artist of the last year? (at the time of making this question)",
         "options": ["Djo", "Valley", "Dreams We've Had", "Songs by Jonas", "Bastille"],
         "answers": ["djo"],
+        "fun_fact": "Fun fact: Those options are actually listed in exact order of Maxwell's top artists of the last year!",
     },
     {
         "id": 15,
@@ -136,6 +142,7 @@ QUESTIONS = [
         "prompt": "What is Maxwell's second favorite movie?",
         "options": ["The Batman", "Everything Everywhere All at Once", "Obsession", "The Odyssey", "The Black Phone"],
         "answers": ["everything everywhere all at once"],
+        "fun_fact": "Fun fact: Those options are actually listed in exact order of Maxwell's top favorite movies!",
     },
     {
         "id": 16,
@@ -143,6 +150,7 @@ QUESTIONS = [
         "prompt": "What is Maxwell's highest ever rank in Rocket League? (any game mode)",
         "options": ["Champion 1", "Champion 2", "Champion 3", "Grand Champ 1", "Grand Champ 2", "Grand Champ 3"],
         "answers": ["champion 3"],
+        "fun_fact": "Fun fact: Maxwell got this rank in Rumble! His highest in the standard modes is Champion 2",
     },
     {
         "id": 17,
@@ -156,6 +164,7 @@ QUESTIONS = [
         "type": "text",
         "prompt": "What episode of One Piece is Maxwell currently on? (to the nearest 10) (1180 episodes total)",
         "answers": ["950", "episode 950", "ep 950"],
+        "fun_fact": "Fun fact: The exact number is actually 950.",
     },
     {
         "id": 19,
@@ -163,12 +172,14 @@ QUESTIONS = [
         "prompt": "What was Maxwell's favorite area on his mission?",
         "options": ["Greenwich", "Gosford", "Wollongong", "Armidale", "Sutherland", "Oakhurst", "Camden", "Prariewood"],
         "answers": ["wollongong", "armidale", "sutherland"],
+        "fun_fact": "Fun fact: My three favorite are Wollongong, Armidale, and Sutherland! Though, the original quiz only counted Wollongong",
     },
     {
         "id": 20,
         "type": "text",
         "prompt": "Who is this quiz about?",
         "answers": ["maxwell", "maxwell cannon", "maxwell jenkins cannon"],
+        "fun_fact": "Fun fact: My life time friend, Isaac Sam, got this one wrong.",
     },
 ]
 
@@ -288,15 +299,23 @@ def handle_submit(event):
         feedback = document.getElementById(f"feedback-{q['id']}")
 
         card.classList.remove("incorrect", "correct")
-        feedback.textContent = ""
+        feedback.innerHTML = ""
 
+        status_line = document.createElement("div")
         if user_answer in q["answers"]:
             score += 1
             card.classList.add("correct")
-            feedback.textContent = "✓ Correct"
+            status_line.textContent = "✓ Correct"
         else:
             card.classList.add("incorrect")
-            feedback.textContent = "✗ Incorrect"
+            status_line.textContent = "✗ Incorrect"
+        feedback.appendChild(status_line)
+
+        if q.get("fun_fact"):
+            fact_line = document.createElement("p")
+            fact_line.className = "fun-fact"
+            fact_line.textContent = q["fun_fact"]
+            feedback.appendChild(fact_line)
 
     percent = round((score / total) * 100)
     tier = get_tier(percent)
